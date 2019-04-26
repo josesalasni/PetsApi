@@ -20,13 +20,13 @@ namespace TodoApi.Controllers
     [Authorize(Policy = "ApiUser")]
     [Route("api/[controller]")]
     [ApiController]
-    public class PublicationController : Controller 
+    public class DonationController : Controller 
     {
         private readonly TodoContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly IHostingEnvironment _environment;
 
-        public PublicationController(TodoContext context, UserManager<AppUser> UserManager, IHostingEnvironment environment)
+        public DonationController(TodoContext context, UserManager<AppUser> UserManager, IHostingEnvironment environment)
         {
             _context = context;
             _userManager = UserManager;
@@ -34,8 +34,9 @@ namespace TodoApi.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> Get()
+        public async Task<OkObjectResult> Get()
         {
+            //Query 
             var PetsList = await _context.Publications.Select( p => new {
                 p.Pictures,
                 p.ApplicationUser.FirstName,
@@ -47,16 +48,18 @@ namespace TodoApi.Controllers
                 p.Description,
                 p.Status,
                 p.Category.CategoryName
-            }).ToListAsync();
+            })
+            .Where(t => t.TypePublication.Equals("Desaparecido"))
+            .OrderByDescending(t => t.DatePublish).ToListAsync();
 
             if (PetsList == null)
             {
-                return new JsonResult( "Not Found" ) { StatusCode = (int)HttpStatusCode.NotFound };
+                return new OkObjectResult( "Not Found" ) { StatusCode = (int)HttpStatusCode.NotFound };
             }
 
             else 
             {
-                return new JsonResult (PetsList) {StatusCode = (int)HttpStatusCode.OK}; 
+                return new OkObjectResult (PetsList) {StatusCode = (int)HttpStatusCode.OK}; 
             }
 
         }
@@ -69,13 +72,6 @@ namespace TodoApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            /* 
-            if ( publication.TypePublication.Equals("Donación") == false && (publication.TypePublication.Equals("Desaparecido") == false ) )
-            {
-                return BadRequest("Please choose one of the two options");
-            }
-            */
 
             /* 
             if (files.Count > 3 )
@@ -111,7 +107,7 @@ namespace TodoApi.Controllers
                 Description = publication.Description,
                 DatePublish = DateTime.Now,
                 ApplicationUser = user,  
-                //TypePublication = publication.TypePublication,
+                TypePublication = "Donación",
                 Status = false,
             };
 
@@ -174,39 +170,36 @@ namespace TodoApi.Controllers
 
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete (int id) 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Detail (int id)
         {
-            //Get user from token
-            ClaimsPrincipal currentUser = this.User;
-            var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await _userManager.FindByNameAsync(currentUserName);
+            //Unique public data disponible for the client
+            var publication = await _context.Publications.Select( p => new {
+                p.Comments,
+                p.Pictures,
+                p.ApplicationUser.FirstName,
+                p.ApplicationUser.LastName,
+                p.ApplicationUser.PictureUrl,
+                p.PublicationId,
+                p.TypePublication,
+                p.DatePublish,
+                p.Description,
+                p.Status,
+                p.Category.CategoryName
+            }).FirstOrDefaultAsync( t => t.PublicationId == id );
 
-            //Check if user is valid, and get publication
-            if (user == null)
-            {
-                return new OkObjectResult("Error") { StatusCode = (int)HttpStatusCode.Unauthorized };
-            }
-
-            var publication = await _context.Publications.FirstOrDefaultAsync(x => x.PublicationId == id);
-            
-            //Validating if the publication exists and belongs to the user
             if (publication == null)
             {
                 return new OkObjectResult("Publication doesnt exist or already deleted") { StatusCode = (int)HttpStatusCode.NotFound };
-            }
+            } 
 
-            if (publication.ApplicationUser != user )
+            else 
             {
-                return new OkObjectResult("Your account doesn't have this rights") { StatusCode = (int)HttpStatusCode.Unauthorized };
-            }
+                return new OkObjectResult(publication) {StatusCode = (int) HttpStatusCode.OK }  ;
+            } 
 
-            //Finally remove from the database
-            _context.Publications.Remove(publication);
-
-            await _context.SaveChangesAsync();
-
-            return new OkObjectResult("Publication Deleted Succesfully") { StatusCode = (int)HttpStatusCode.Unauthorized };
         }
+
+        
     }
 }

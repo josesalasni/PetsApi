@@ -106,6 +106,8 @@ namespace Asp_Api
                         
             builder.AddEntityFrameworkStores<TodoContext>().AddDefaultTokenProviders();
 
+            services.AddSignalR();
+
             services.AddCors(); //Development
         }
 
@@ -130,7 +132,9 @@ namespace Asp_Api
                 .AllowAnyMethod()
                 .AllowAnyOrigin()
                 .AllowCredentials()
+                .WithExposedHeaders("PagingHeader")
             );
+
 
             app.UseHttpsRedirection();
             app.UseMvc();

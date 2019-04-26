@@ -25,8 +25,7 @@ namespace TodoApi.Models
         [Column(TypeName = "decimal(9, 6)") ]
         public decimal Longitude {get; set;}
 
-        //PetLost or Donation
-        [Required]
+        //Desaparecido o Donacion
         public string TypePublication {get; set;}
 
         //still Searching, or already found (finished)

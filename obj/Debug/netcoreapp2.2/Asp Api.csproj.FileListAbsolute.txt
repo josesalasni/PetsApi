@@ -26,3 +26,17 @@ E:\Documents\Proyectos\Pets\Asp Api\obj\Debug\netcoreapp2.2\Asp Api.AssemblyInfo
 E:\Documents\Proyectos\Pets\Asp Api\obj\Debug\netcoreapp2.2\Asp Api.RazorTargetAssemblyInfo.cache
 E:\Documents\Proyectos\Pets\Asp Api\obj\Debug\netcoreapp2.2\Asp Api.dll
 E:\Documents\Proyectos\Pets\Asp Api\obj\Debug\netcoreapp2.2\Asp Api.pdb
+E:\Documents\GitHub\PetsApi\bin\Debug\netcoreapp2.2\Asp Api.deps.json
+E:\Documents\GitHub\PetsApi\bin\Debug\netcoreapp2.2\Asp Api.runtimeconfig.json
+E:\Documents\GitHub\PetsApi\bin\Debug\netcoreapp2.2\Asp Api.runtimeconfig.dev.json
+E:\Documents\GitHub\PetsApi\bin\Debug\netcoreapp2.2\Asp Api.dll
+E:\Documents\GitHub\PetsApi\bin\Debug\netcoreapp2.2\Asp Api.pdb
+E:\Documents\GitHub\PetsApi\obj\Debug\netcoreapp2.2\Asp Api.csprojAssemblyReference.cache
+E:\Documents\GitHub\PetsApi\obj\Debug\netcoreapp2.2\Asp Api.csproj.CoreCompileInputs.cache
+E:\Documents\GitHub\PetsApi\obj\Debug\netcoreapp2.2\Asp Api.RazorAssemblyInfo.cache
+E:\Documents\GitHub\PetsApi\obj\Debug\netcoreapp2.2\Asp Api.RazorAssemblyInfo.cs
+E:\Documents\GitHub\PetsApi\obj\Debug\netcoreapp2.2\Asp Api.AssemblyInfoInputs.cache
+E:\Documents\GitHub\PetsApi\obj\Debug\netcoreapp2.2\Asp Api.AssemblyInfo.cs
+E:\Documents\GitHub\PetsApi\obj\Debug\netcoreapp2.2\Asp Api.RazorTargetAssemblyInfo.cache
+E:\Documents\GitHub\PetsApi\obj\Debug\netcoreapp2.2\Asp Api.dll
+E:\Documents\GitHub\PetsApi\obj\Debug\netcoreapp2.2\Asp Api.pdb

@@ -12243,11 +12243,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "e:\\Documents\\Proyectos\\Pets\\Asp Api\\Asp Api.csproj",
+      "projectUniqueName": "E:\\Documents\\GitHub\\PetsApi\\Asp Api.csproj",
       "projectName": "Asp Api",
-      "projectPath": "e:\\Documents\\Proyectos\\Pets\\Asp Api\\Asp Api.csproj",
+      "projectPath": "E:\\Documents\\GitHub\\PetsApi\\Asp Api.csproj",
       "packagesPath": "C:\\Users\\PseudoRex\\.nuget\\packages\\",
-      "outputPath": "e:\\Documents\\Proyectos\\Pets\\Asp Api\\obj\\",
+      "outputPath": "E:\\Documents\\GitHub\\PetsApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
