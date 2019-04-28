@@ -19,7 +19,7 @@ namespace TodoApi.Models
         public virtual Publication Publication {get; set;}
 
         //Identity relation
-        public string ApplicationUserId { get; set; }
-        public AppUser ApplicationUser { get; set; }
+        public virtual string ApplicationUserId { get; set; }
+        public virtual AppUser ApplicationUser { get; set; }
     }
 }

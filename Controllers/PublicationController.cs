@@ -34,8 +34,14 @@ namespace TodoApi.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> Get()
+        public async Task<JsonResult> Get([FromQuery]PagingParameterModel pagingparametermodel)
         {
+            //Get type publication and status
+            var typeP = pagingparametermodel.TypePublication;
+            bool status = pagingparametermodel.Status;
+            var typePet = pagingparametermodel.CategoryName;
+
+            //Query with optional parameters in the url
             var PetsList = await _context.Publications.Select( p => new {
                 p.Pictures,
                 p.ApplicationUser.FirstName,
@@ -47,22 +53,68 @@ namespace TodoApi.Controllers
                 p.Description,
                 p.Status,
                 p.Category.CategoryName
-            }).ToListAsync();
+            }).Where( t=>  
+                (t.TypePublication == typeP || typeP == null)
+                && (t.CategoryName.Equals(typePet) || typePet == null)
+                && (t.Status == status)
+            ).OrderByDescending(t => t.DatePublish)
+            .ToListAsync();
 
+            //Return if error
             if (PetsList == null)
             {
                 return new JsonResult( "Not Found" ) { StatusCode = (int)HttpStatusCode.NotFound };
             }
 
+            //Do the paging unility
             else 
             {
-                return new JsonResult (PetsList) {StatusCode = (int)HttpStatusCode.OK}; 
+                // Get's No of Rows Count and do the paging 
+                int count = PetsList.Count();  
+            
+                // Parameter is passed from Query string if it is null then it default Value will be pageNumber:1  
+                int CurrentPage = pagingparametermodel.pageNumber;  
+            
+                // Parameter is passed from Query string if it is null then it default Value will be pageSize:20  
+                int PageSize = pagingparametermodel.pageSize;  
+            
+                // Display TotalCount to Records to User  
+                int TotalCount = count;  
+            
+                // Calculating Totalpage by Dividing (No of Records / Pagesize)  
+                int TotalPages = (int)Math.Ceiling(count / (double)PageSize);  
+            
+                // Returns List of Pets after applying Paging   
+                var items = PetsList.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();  
+            
+                // if CurrentPage is greater than 1 means it has previousPage  
+                var previousPage = CurrentPage > 1 ? "Yes" : "No";  
+            
+                // if TotalPages is greater than CurrentPage means it has nextPage  
+                var nextPage = CurrentPage < TotalPages ? "Yes" : "No";  
+            
+                // Object which we are going to send in header   
+                var paginationMetadata = new PaginationHeaders
+                {  
+                    totalCount = TotalCount,  
+                    pageSize = PageSize,  
+                    currentPage = CurrentPage,  
+                    totalPages = TotalPages,  
+                    previousPage = previousPage,  
+                    nextPage = nextPage  
+                };  
+                
+                //Put paging parameters to the header
+                Response.Headers.Add("PagingHeader", JsonConvert.SerializeObject(paginationMetadata) );
+
+                //Finally send petlist to the client 
+                return new JsonResult (items) {StatusCode = (int)HttpStatusCode.OK}; 
             }
 
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Publication publication )
+        public async Task<IActionResult> Post([FromBody] PublicationHelper publication )
         {
             //Viewmodel validations
             if (!ModelState.IsValid)
@@ -70,12 +122,17 @@ namespace TodoApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            /* 
             if ( publication.TypePublication.Equals("Donación") == false && (publication.TypePublication.Equals("Desaparecido") == false ) )
             {
                 return BadRequest("Please choose one of the two options");
             }
-            */
+
+            var Category = await _context.Categories.Where ( t=> t.CategoryName.Equals (publication.Category)).FirstOrDefaultAsync();
+
+            if (Category == null)
+            {
+                return BadRequest("Please select a valid Category");
+            }
 
             /* 
             if (files.Count > 3 )
@@ -111,7 +168,8 @@ namespace TodoApi.Controllers
                 Description = publication.Description,
                 DatePublish = DateTime.Now,
                 ApplicationUser = user,  
-                //TypePublication = publication.TypePublication,
+                TypePublication = publication.TypePublication,
+                Category = Category,
                 Status = false,
             };
 
@@ -207,6 +265,38 @@ namespace TodoApi.Controllers
             await _context.SaveChangesAsync();
 
             return new OkObjectResult("Publication Deleted Succesfully") { StatusCode = (int)HttpStatusCode.Unauthorized };
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Detail (int id)
+        {
+            //Unique public data disponible for the client
+            var publication = await _context.Publications.Select( p => new {
+                p.Comments,
+                p.Pictures,
+                p.ApplicationUser.FirstName,
+                p.ApplicationUser.LastName,
+                p.ApplicationUser.PictureUrl,
+                p.PublicationId,
+                p.TypePublication,
+                p.DatePublish,
+                p.Description,
+                p.Latitude,
+                p.Longitude,
+                p.Status,
+                p.Category.CategoryName
+            }).FirstOrDefaultAsync( t => t.PublicationId == id );
+
+            if (publication == null)
+            {
+                return new OkObjectResult("Publication doesnt exist or already deleted") { StatusCode = (int)HttpStatusCode.NotFound };
+            } 
+
+            else 
+            {
+                return new OkObjectResult(publication) {StatusCode = (int) HttpStatusCode.OK }  ;
+            } 
+
         }
     }
 }

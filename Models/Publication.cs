@@ -42,8 +42,8 @@ namespace TodoApi.Models
         public virtual Category Category {get; set;}
 
         //Identity relation
-        public string ApplicationUserId { get; set; }
-        public AppUser ApplicationUser { get; set; }
+        public virtual string ApplicationUserId { get; set; }
+        public virtual AppUser ApplicationUser { get; set; }
         
     }
 }

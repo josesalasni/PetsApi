@@ -4,6 +4,12 @@ namespace TodoApi.Models
 {
     public class PagingParameterModel  
     {  
+        public string TypePublication {get; set;} 
+
+        public bool Status {get; set;} = false;
+
+        public string CategoryName {get; set;} 
+
         const int maxPageSize = 20;  
   
         public int pageNumber { get; set; } = 1;  

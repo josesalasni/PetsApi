@@ -23,29 +23,6 @@ namespace TodoApi.Controllers
             _userManager = UserManager;
         }
         
-        /*
-        [Authorize(Policy = "ApiUser")]
-        [HttpGet("api/publication/{id}/comment")]
-        public async Task<IActionResult> Get (int id )
-        {
-            var publication = await _context.Publications.Include(t => t.Comments).FirstOrDefaultAsync(t => t.PublicationId == id);
-
-            if (publication == null)
-            {
-                return new OkObjectResult("The publication doesn't exist or has been deleted") {StatusCode = (int)HttpStatusCode.NotFound };
-            }
-
-            var comments = publication.Comments.Select ( p => new {
-                p.CommentId,
-                p.DateComment,
-                p.Message,
-                p.ApplicationUserId
-            }).ToList();
-
-            return new OkObjectResult( comments ) {StatusCode = (int)HttpStatusCode.OK };
-        }
-
-        */
 
         [Authorize(Policy = "ApiUser")]
         [HttpPost("api/publication/{id}/comment")]

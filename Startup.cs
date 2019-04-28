@@ -39,8 +39,8 @@ namespace Asp_Api
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
                 
-            services.AddDbContext<TodoContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<TodoContext>(p => p
+                .UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddSingleton<IJwtFactory, JwtFactory>();
             
@@ -130,7 +130,7 @@ namespace Asp_Api
             app.UseCors(builder => builder
                 .AllowAnyHeader()
                 .AllowAnyMethod()
-                .AllowAnyOrigin()
+                .WithOrigins("http://localhost:3000", "https://josesalasni.github.io/mascotas")
                 .AllowCredentials()
                 .WithExposedHeaders("PagingHeader")
             );
