@@ -8,7 +8,7 @@ namespace TodoApi.Models
     {         
         public TodoContext(DbContextOptions<TodoContext> options) : base(options)         
         {         
-            //
+            
         }                     
     
         public DbSet<Publication> Publications { get; set; }     
@@ -27,6 +27,7 @@ namespace TodoApi.Models
                 .OnDelete(DeleteBehavior.Cascade
             );
 
+            
             
         }
     } 

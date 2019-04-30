@@ -24,13 +24,11 @@ namespace TodoApi.Controllers
     {
         private readonly TodoContext _context;
         private readonly UserManager<AppUser> _userManager;
-        private readonly IHostingEnvironment _environment;
 
-        public PublicationController(TodoContext context, UserManager<AppUser> UserManager, IHostingEnvironment environment)
+        public PublicationController(TodoContext context, UserManager<AppUser> UserManager)
         {
             _context = context;
             _userManager = UserManager;
-            _environment = environment;
         }
 
         [HttpGet]
@@ -43,7 +41,7 @@ namespace TodoApi.Controllers
 
             //Query with optional parameters in the url
             var PetsList = await _context.Publications.Select( p => new {
-                p.Pictures,
+                p.Pictures.FirstOrDefault().Path,
                 p.ApplicationUser.FirstName,
                 p.ApplicationUser.LastName,
                 p.ApplicationUser.PictureUrl,
@@ -134,13 +132,6 @@ namespace TodoApi.Controllers
                 return BadRequest("Please select a valid Category");
             }
 
-            /* 
-            if (files.Count > 3 )
-            {
-                return BadRequest("Please upload max 3 photos");
-            }
-            */
-
             //Get user from token
             ClaimsPrincipal currentUser = this.User;
             var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -151,17 +142,6 @@ namespace TodoApi.Controllers
                 return new OkObjectResult("Error") { StatusCode = (int)HttpStatusCode.Unauthorized };
             }
 
-            /* 
-            //First check the photos before upload to verify its not a script or corrupted file
-            foreach (var file in files)
-            {
-                if (CheckPhoto.IsImage(file) == false )
-                {
-                    return BadRequest("Please upload a valid photo");
-                }
-            }
-            */
- 
             //Creating the entity
             var _publication = new Publication()
             {
@@ -176,62 +156,40 @@ namespace TodoApi.Controllers
             //Finally add
             await _context.Publications.AddAsync(_publication);
 
-            /* 
-            //Uploading if all photos are valid
-            foreach (var file in files)
-            {
-                var Picture = new Models.Picture () 
-                {
-                    Path = UploadPhoto (file),
-                    Publication = _publication
-                };
-
-                await _context.Pictures.AddAsync(Picture);
-            }            
-            */
-
             await _context.SaveChangesAsync();
 
-            return new OkObjectResult("The publication has beed Added") { StatusCode = (int)HttpStatusCode.OK };
+            return new OkObjectResult(_publication.PublicationId) { StatusCode = (int)HttpStatusCode.OK };
         }
 
-        //Method for upload photos 
-        private String UploadPhoto(IFormFile file) 
+        [HttpGet("{id}")]
+        public async Task<OkObjectResult> Detail(int id)
         {
-            if (file.Length > 0 )
+            //Query with optional parameters in the url
+            var Pet = await _context.Publications.Select( p => new {
+                p.Pictures,
+                p.ApplicationUser.FirstName,
+                p.ApplicationUser.LastName,
+                p.ApplicationUser.PictureUrl,
+                p.PublicationId,
+                p.TypePublication,
+                p.Longitude,
+                p.Latitude,
+                p.DatePublish,
+                p.Description,
+                p.Status,
+                p.Category.CategoryName
+            }).FirstOrDefaultAsync (t => t.PublicationId == id);
+
+            //Return if error
+            if (Pet == null)
             {
-                try
-                {
-                    if (!Directory.Exists(_environment.WebRootPath + "\\uploads\\"))
-                    {
-                        Directory.CreateDirectory(_environment.WebRootPath + "\\uploads\\");
-                    }
-                    
-                    using (FileStream filestream =  System.IO.File.Create(_environment.WebRootPath + "\\uploads\\" + file.FileName))
-                    {
-                        file.CopyTo(filestream);
-                        filestream.Flush();
-
-                        return file.FileName ;
-                    }
-                
-                
-                }
-
-                catch (Exception ex)
-                {
-                    return ex.ToString();
-                }
-                
+                return new OkObjectResult( "Publication doesn't exist or has been deleted" ) { StatusCode = (int)HttpStatusCode.NotFound };
             }
 
-            else
-            {
-                return "File is corrupted";
-            }
-
+            return new OkObjectResult (Pet) { StatusCode = (int)HttpStatusCode.OK };
         }
 
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete (int id) 
         {
@@ -256,7 +214,7 @@ namespace TodoApi.Controllers
 
             if (publication.ApplicationUser != user )
             {
-                return new OkObjectResult("Your account doesn't have this rights") { StatusCode = (int)HttpStatusCode.Unauthorized };
+                return new OkObjectResult("Your account doesn't have this rights") { StatusCode = (int)HttpStatusCode.Forbidden };
             }
 
             //Finally remove from the database
@@ -264,39 +222,7 @@ namespace TodoApi.Controllers
 
             await _context.SaveChangesAsync();
 
-            return new OkObjectResult("Publication Deleted Succesfully") { StatusCode = (int)HttpStatusCode.Unauthorized };
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Detail (int id)
-        {
-            //Unique public data disponible for the client
-            var publication = await _context.Publications.Select( p => new {
-                p.Comments,
-                p.Pictures,
-                p.ApplicationUser.FirstName,
-                p.ApplicationUser.LastName,
-                p.ApplicationUser.PictureUrl,
-                p.PublicationId,
-                p.TypePublication,
-                p.DatePublish,
-                p.Description,
-                p.Latitude,
-                p.Longitude,
-                p.Status,
-                p.Category.CategoryName
-            }).FirstOrDefaultAsync( t => t.PublicationId == id );
-
-            if (publication == null)
-            {
-                return new OkObjectResult("Publication doesnt exist or already deleted") { StatusCode = (int)HttpStatusCode.NotFound };
-            } 
-
-            else 
-            {
-                return new OkObjectResult(publication) {StatusCode = (int) HttpStatusCode.OK }  ;
-            } 
-
+            return new OkObjectResult("Publication Deleted Succesfully") { StatusCode = (int)HttpStatusCode.OK };
         }
     }
 }
