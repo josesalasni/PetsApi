@@ -1,0 +1,14 @@
+E:\Documents\GitHub\PetsWebApi\petsapi\bin\release\netcoreapp2.2\petsapi.deps.json
+E:\Documents\GitHub\PetsWebApi\petsapi\bin\release\netcoreapp2.2\petsapi.runtimeconfig.json
+E:\Documents\GitHub\PetsWebApi\petsapi\bin\release\netcoreapp2.2\petsapi.runtimeconfig.dev.json
+E:\Documents\GitHub\PetsWebApi\petsapi\bin\release\netcoreapp2.2\petsapi.dll
+E:\Documents\GitHub\PetsWebApi\petsapi\bin\release\netcoreapp2.2\petsapi.pdb
+E:\Documents\GitHub\PetsWebApi\petsapi\obj\release\netcoreapp2.2\petsapi.csprojAssemblyReference.cache
+E:\Documents\GitHub\PetsWebApi\petsapi\obj\release\netcoreapp2.2\petsapi.csproj.CoreCompileInputs.cache
+E:\Documents\GitHub\PetsWebApi\petsapi\obj\release\netcoreapp2.2\petsapi.RazorAssemblyInfo.cache
+E:\Documents\GitHub\PetsWebApi\petsapi\obj\release\netcoreapp2.2\petsapi.RazorAssemblyInfo.cs
+E:\Documents\GitHub\PetsWebApi\petsapi\obj\release\netcoreapp2.2\petsapi.AssemblyInfoInputs.cache
+E:\Documents\GitHub\PetsWebApi\petsapi\obj\release\netcoreapp2.2\petsapi.AssemblyInfo.cs
+E:\Documents\GitHub\PetsWebApi\petsapi\obj\release\netcoreapp2.2\petsapi.RazorTargetAssemblyInfo.cache
+E:\Documents\GitHub\PetsWebApi\petsapi\obj\release\netcoreapp2.2\petsapi.dll
+E:\Documents\GitHub\PetsWebApi\petsapi\obj\release\netcoreapp2.2\petsapi.pdb
